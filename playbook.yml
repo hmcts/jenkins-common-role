@@ -1,0 +1,16 @@
+---
+- hosts: all
+  environment:
+    http_proxy: 'http://{{ jenkins_common_role_proxy_host }}:{{ jenkins_common_role_proxy_port }}'
+  become: true
+  roles:
+    - { role: devops.repos, mode: internal }
+    - { role: devops.common, mode: internal }
+    - { role: devops.java, mode: internal }
+    - { role: jenkins-common-role, mode: internal }
+    - { role: devops.docker, mode: internal }
+    - { role: devops.azure-cli, mode: internal }
+  vars:
+    passwordless_sudo: "{{ jenkins_common_role_override_passwordless_sudo }}"
+    jenkins_common_role_username: "{{ jenkins_common_role_override_username }}"
+    vault_token_role_user: "{{ jenkins_common_role_override_vault_token_role_user }}"

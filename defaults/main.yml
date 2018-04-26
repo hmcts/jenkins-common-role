@@ -1,0 +1,45 @@
+---
+jenkins_common_role_proxy_host: "proxyout.reform.hmcts.net"
+jenkins_common_role_proxy_port: "8080"
+
+jenkins_common_role_artifactory_host: "artifactory.reform.hmcts.net"
+
+jenkins_common_role_email_address: "jenkins-email@example.com"
+
+jenkins_common_role_yum_packages:
+  - ruby
+  - ruby-devel
+  - libffi-devel
+  - make
+  - gcc
+  - gcc-c++
+  - sudo
+  - wget
+  - unzip
+
+jenkins_common_role_ruby_gems:
+  - {name: "fpm", version: "1.7.0"}
+
+jenkins_common_role_pip_packages:
+  - python-vagrant
+
+jenkins_common_role_username: jenkins
+
+jenkins_common_role_enable_repos: []
+
+jenkins_yum_packages_regular: []
+jenkins_yum_packages_system: []
+jenkins_yum_packages_artifactory: []
+jenkins_yum_packages_wildcard: []
+
+jenkins_common_role_ssh_port: 22
+
+jenkins_common_role_ssh_hostkeycheck: yes
+
+jenkins_common_role_ssh_hosts:
+  "myhost1.example.com":
+    User: myusername1
+    Port: 22
+  "myhost2.example.com":
+    User: myusername2
+    Port: 22

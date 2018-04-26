@@ -1,0 +1,30 @@
+---
+
+- name: "Check if .gitconfig exists for Jenkins"
+  command: ls ~{{ jenkins_common_role_username }}/.gitconfig
+  register: jenkins_git_config_exists
+  changed_when: false
+  failed_when: false
+  tags:
+    - git-config
+
+- block:
+  - name: "Set up git config username"
+    command: git config --global user.name "Jenkins"
+    become: yes
+    become_user: "{{ jenkins_common_role_username }}"
+    args:
+      warn: no
+
+  - name: "Set up git config email address"
+    command: git config --global user.email "{{ jenkins_common_role_email_address }}"
+    become: yes
+    become_user: "{{ jenkins_common_role_username }}"
+    args:
+      warn: no
+
+  become: yes
+  become_user: "{{ jenkins_common_role_username }}"
+  when: jenkins_git_config_exists.rc != 0
+  tags:
+    - git-config

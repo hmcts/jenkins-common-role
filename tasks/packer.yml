@@ -1,0 +1,62 @@
+---
+- name: "Register pre-existing Packer."
+  find:
+    paths: /usr/local/sbin
+    patterns: "packer*.zip"
+  register: currentpacker
+
+- name: "Print currentpacker name."
+  debug:
+    msg: "{{ currentpacker }}"
+
+- name: "Print currentpacker matched amount."
+  debug:
+    msg: "{{ currentpacker.matched }}"
+
+# The below block won't pull in the zip if the file
+# that's there already matches what it's trying to
+# pull. `man wget` for more information.
+- name: "Grab Packer from artifactory"
+  shell: "wget -r -nd -nc -np -A 'packer_*_linux_amd64.zip' https://{{ jenkins_common_role_artifactory_host }}/artifactory/list/ext-hashicorp-packer/"
+  args:
+    chdir: /usr/local/sbin
+  changed_when: False
+  tags:
+    - skip_ansible_lint
+
+- name: "Register just-grabbed Packer."
+  find:
+    paths: /usr/local/sbin
+    patterns: "packer*.zip"
+  register: checkpacker
+
+- name: "Print versions"
+  debug:
+    msg: "Old: {{ currentpacker }} New: {{ checkpacker }}"
+  when: currentpacker != checkpacker
+
+- name: "Print checkpacker path"
+  debug:
+    msg: "{{ checkpacker.files.0.path }}"
+
+- name: "Install (airquotes) packer when nothing exists"
+  unarchive:
+    src: "{{ checkpacker.files.0.path }}"
+    dest: /usr/local/sbin/
+    remote_src: yes
+  when: currentpacker != checkpacker
+
+- name: "Install (airquotes) packer when it already exists"
+  unarchive:
+    src: "{{ checkpacker.files.1.path }}"
+    dest: /usr/local/sbin/
+    remote_src: yes
+  when: checkpacker.matched == 2
+
+- name: "Delete old packer version if we replaced."
+  file:
+    path: "{{ currentpacker.files.0.path }}"
+    state: absent
+  when:
+    - currentpacker != checkpacker
+    - currentpacker.matched != 0

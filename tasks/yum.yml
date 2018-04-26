@@ -1,0 +1,36 @@
+---
+- name: Install regular packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    enablerepo: "{{ jenkins_common_role_enable_repos | join(',') }}"
+  with_items:
+    - "{{ jenkins_yum_packages_regular }}"
+  become: yes
+
+- name: Install system packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    enablerepo: "{{ jenkins_common_role_enable_repos | join(',') }}"
+  with_items:
+    - "{{ jenkins_yum_packages_system }}"
+  become: yes
+
+- name: Install rpm packages from artifactory
+  yum:
+    name: "{{ item }}"
+    state: present
+    enablerepo: "{{ jenkins_common_role_enable_repos | join(',') }}"
+  with_items:
+    - "{{ jenkins_yum_packages_artifactory }}"
+  become: yes
+
+- name: Install wildcard packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    enablerepo: "{{ jenkins_common_role_enable_repos | join(',') }}"
+  with_items:
+    - "{{ jenkins_yum_packages_wildcard }}"
+  become: yes

@@ -1,0 +1,35 @@
+---
+
+- name: "Ensure jenkins home .ssh/ exists"
+  file:
+    path: "{{ jenkins_home_task.stdout }}/.ssh"
+    state: directory
+    owner: "{{ jenkins_common_role_username }}"
+    group: "{{ jenkins_common_role_username }}"
+    mode: 0700
+
+- name: "Set up SSH client config"
+  template:
+    src: ssh-config.j2
+    dest: "{{ jenkins_home_task.stdout }}/.ssh/config"
+    owner: "{{ jenkins_common_role_username }}"
+    group: "{{ jenkins_common_role_username }}"
+    mode: 0600
+
+- name: "Set up SSH pub key if defined"
+  copy:
+    dest: "{{ jenkins_home_task.stdout }}/.ssh/id_rsa.pub"
+    content: "{{ jenkins_common_role_ssh_public_key }}"
+    owner: "{{ jenkins_common_role_username }}"
+    group: "{{ jenkins_common_role_username }}"
+    mode: 0644
+  when: jenkins_common_role_ssh_public_key is defined
+
+- name: "Set up SSH private key if defined"
+  copy:
+    dest: "{{ jenkins_home_task.stdout }}/.ssh/id_rsa"
+    content: "{{ jenkins_common_role_ssh_private_key }}"
+    owner: "{{ jenkins_common_role_username }}"
+    group: "{{ jenkins_common_role_username }}"
+    mode: 0600
+  when: jenkins_common_role_ssh_private_key is defined

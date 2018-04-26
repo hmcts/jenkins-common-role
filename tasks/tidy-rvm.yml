@@ -1,0 +1,6 @@
+---
+
+- name: "Ensure rvm profile config is removed"
+  file:
+    path: /etc/profile.d/rvm.sh
+    state: absent

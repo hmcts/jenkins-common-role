@@ -1,0 +1,14 @@
+{% for hostkey, hostval in jenkins_common_role_ssh_hosts.iteritems() %}
+Host {{ hostkey }}
+{% for pkey, pval in hostval.iteritems() %}
+    {{ pkey }} {{ pval }}
+{% endfor %}
+{% endfor %}
+
+Host *
+{% if jenkins_override_ssh_user is defined %}
+    User {{ jenkins_override_ssh_user }}
+{% endif %}
+    Port {{ jenkins_common_role_ssh_port }}
+    StrictHostKeyChecking {{ jenkins_common_role_ssh_hostkeycheck }}
+    UserKnownHostsFile /dev/null

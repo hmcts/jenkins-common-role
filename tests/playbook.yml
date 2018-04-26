@@ -1,0 +1,14 @@
+---
+- hosts: all
+
+  pre_tasks:
+  - name: pre-task test
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - wget
+      - unzip
+
+  roles:
+    - role: jenkins-common-role

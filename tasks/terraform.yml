@@ -1,0 +1,63 @@
+---
+- name: "Register pre-existing Terraform."
+  find:
+    paths: /usr/local/sbin
+    patterns: "terraform*.zip"
+  register: currentterraform
+
+- name: "Print currentterraform name."
+  debug:
+    msg: "{{ currentterraform }}"
+
+- name: "Print currentterraform matched amount."
+  debug:
+    msg: "{{ currentterraform.matched }}"
+
+# The below block won't pull in the zip if the file
+# that's there already matches what it's trying to
+# pull. `man wget` for more information.
+- name: "Grab Terraform from artifactory"
+  shell: "wget -r -nd -nc -np -A 'terraform_*_linux_amd64.zip' https://{{ jenkins_common_role_artifactory_host }}/artifactory/list/ext-hashicorp-terraform/"
+  args:
+    chdir: /usr/local/sbin
+  changed_when: False
+  tags:
+    - skip_ansible_lint
+
+- name: "Register just-grabbed Terraform."
+  find:
+    paths: /usr/local/sbin
+    patterns: "terraform*.zip"
+  register: checkterraform
+
+- name: "Print versions"
+  debug:
+    msg: "Old: {{ currentterraform }} New: {{ checkterraform }}"
+  when: currentterraform != checkterraform
+
+- name: "Print checkterraform path"
+  debug:
+    msg: "{{ checkterraform.files.0.path }}"
+
+- name: "Install (airquotes) terraform when nothing exists"
+  unarchive:
+    src: "{{ checkterraform.files.0.path }}"
+    dest: /usr/local/sbin/
+    remote_src: yes
+  when: currentterraform != checkterraform
+
+- name: "Install (airquotes) terraform when it already exists"
+  unarchive:
+    src: "{{ checkterraform.files.1.path }}"
+    dest: /usr/local/sbin/
+    remote_src: yes
+  when: checkterraform.matched == 2
+
+
+- name: "Delete old terraform version if we replaced."
+  file:
+    path: "{{ currentterraform.files.0.path }}"
+    state: absent
+  when:
+    - currentterraform != checkterraform
+    - currentterraform.matched != 0
