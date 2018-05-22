@@ -18,6 +18,7 @@ jenkins_common_role_yum_packages:
   - unzip
 
 jenkins_common_role_ruby_gems:
+  - {name: "ruby-xz", version: "0.2.3"}
   - {name: "fpm", version: "1.7.0"}
 
 jenkins_common_role_pip_packages:
