@@ -7,7 +7,6 @@
     - { role: devops.repos, mode: internal }
     - { role: devops.common, mode: internal }
     - { role: devops.java, mode: internal }
-    - { role: jenkins-common-role, mode: internal }
     - { role: devops.docker, mode: internal }
     - { role: devops.azure-cli, mode: internal }
   vars:
