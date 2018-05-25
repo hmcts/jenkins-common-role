@@ -8,7 +8,7 @@
 - name: devops.common
   src: https://github.com/hmcts/common-role.git
   scm: git
-  version: master
+  version: RDO-1967-requirements-coding-in-the-open
 
 - name: devops.java
   src: https://github.com/hmcts/java-role.git
