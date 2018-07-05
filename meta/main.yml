@@ -1,5 +1,5 @@
 ---
 dependencies:
-  - role: devops.repos
+  - role: repos-role
   - role: devops.common
   - role: devops.vault-token

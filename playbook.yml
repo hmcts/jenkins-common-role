@@ -4,7 +4,7 @@
     http_proxy: 'http://{{ jenkins_common_role_proxy_host }}:{{ jenkins_common_role_proxy_port }}'
   become: true
   roles:
-    - { role: devops.repos, mode: internal }
+    - { role: repos-role, mode: internal }
     - { role: devops.common, mode: internal }
     - { role: devops.java, mode: internal }
     - { role: jenkins-common-role, mode: internal }
