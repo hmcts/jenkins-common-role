@@ -1,6 +1,6 @@
 ---
 
-- name: repos-role
+- name: devops.repos
   src: git@git.reform.hmcts.net:devops/repos-role.git
   scm: git
   version: master
